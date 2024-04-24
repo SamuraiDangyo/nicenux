@@ -24,7 +24,6 @@ import cpuinfo
 import re
 import sys
 import multiprocessing
-#import platform
 
 # Constants
 
@@ -57,7 +56,6 @@ class Machine:
     self.kernel       = subprocess.check_output("uname --r", shell = True).strip().decode()
     os_name           = subprocess.check_output("lsb_release -a 2>/dev/null", shell = True).strip().decode()
     self.os_name      = re.findall("Description:\s*(.*)", os_name)[0]
-    #self.os_name     = platform.platform()
     self.cpu_count    = multiprocessing.cpu_count()
 
   def print_kernel(self):
@@ -124,7 +122,7 @@ class Machine:
       " ( {:.2f}% )".format(self.memory.percent),
       Shell.END]))
 
-  def print_sdd(self):
+  def print_ssd(self):
     print("".join([
       Shell.LOGO,
       " |______|_____|_| \_|\____//_/ \_\ ",
@@ -144,7 +142,7 @@ class Machine:
     self.print_arch()
     self.print_cpu()
     self.print_ram()
-    self.print_sdd()
+    self.print_ssd()
 
 # Functions
 
