@@ -30,7 +30,7 @@ echo "${FONT1}Installing ...${END}"
 pip install py-cpuinfo
 pip install psutil
 
-chmod +x nicenux.py
+chmod 555 nicenux.py
 sudo cp nicenux.py /usr/bin
 
 echo "${FONT2}... and done !${END}"

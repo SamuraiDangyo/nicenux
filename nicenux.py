@@ -28,7 +28,7 @@ import multiprocessing
 
 # Constants
 
-VERSION = "nicenux 1.0"
+VERSION = "nicenux 1.1"
 
 # Classes
 
@@ -49,6 +49,7 @@ class Floppy:
 class Machine:
   def __init__(self):
     self.ssd          = psutil.disk_usage('/')
+    self.cpu_freq     = psutil.cpu_freq()
     self.memory       = psutil.virtual_memory()
     self.cpu          = cpuinfo.get_cpu_info()['brand_raw']
     self.cpu_usage    = psutil.cpu_percent(4)
@@ -105,7 +106,7 @@ class Machine:
       Shell.END,
       Shell.FONT2,
       self.cpu,
-      "{:.0f}x".format(self.cpu_count),
+      " {:.0f}x{:.2f}GHz".format(self.cpu_count, self.cpu_freq.current),
       " ( {:.2f}% )".format(self.cpu_usage),
       Shell.END]))
 

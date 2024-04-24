@@ -6,7 +6,7 @@ Written in Python3.
 
 ## Usage
 
-- Install: `> chmod +x install.sh && ./install.sh`
+- Install: `> sh install.sh`
 - Run:     `> nicenux.py`
 
 Enjoy !
