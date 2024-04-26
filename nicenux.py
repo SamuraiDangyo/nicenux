@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# nicenux. Shows ASCII art Linux information. Written in Python3.
+# nicenux. Prints nice ASCII art Linux information. Written in Python3.
 # Copyright (C) 2024 Toni Helminen
 #
 # This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ import multiprocessing
 
 # Constants
 
-VERSION = "nicenux 1.1"
+VERSION = "nicenux 1.2"
 
 # Classes
 
@@ -47,8 +47,7 @@ class Floppy:
 
 class Machine:
   def __init__(self):
-    self.ssd          = psutil.disk_usage('/')
-    self.cpu_freq     = psutil.cpu_freq()
+    self.disk         = psutil.disk_usage('/')
     self.memory       = psutil.virtual_memory()
     self.cpu          = cpuinfo.get_cpu_info()['brand_raw']
     self.cpu_usage    = psutil.cpu_percent(4)
@@ -57,6 +56,7 @@ class Machine:
     os_name           = subprocess.check_output("lsb_release -a 2>/dev/null", shell = True).strip().decode()
     self.os_name      = re.findall("Description:\s*(.*)", os_name)[0]
     self.cpu_count    = multiprocessing.cpu_count()
+    self.cpu_freq     = psutil.cpu_freq()
 
   def print_kernel(self):
     print("".join([
@@ -91,7 +91,7 @@ class Machine:
       " ARCH:   ",
       Shell.END,
       Shell.FONT2,
-      "{}".format(self.architecture),
+      self.architecture,
       Shell.END]))
 
   def print_cpu(self):
@@ -104,7 +104,7 @@ class Machine:
       Shell.END,
       Shell.FONT2,
       self.cpu,
-      " {:.0f}x{:.2f}GHz".format(self.cpu_count, self.cpu_freq.current),
+      " {:.0f} x {:.2f}GHz".format(self.cpu_count, self.cpu_freq.current),
       " ( {:.2f}% )".format(self.cpu_usage),
       Shell.END]))
 
@@ -122,18 +122,18 @@ class Machine:
       " ( {:.2f}% )".format(self.memory.percent),
       Shell.END]))
 
-  def print_ssd(self):
+  def print_disk(self):
     print("".join([
       Shell.LOGO,
       " |______|_____|_| \_|\____//_/ \_\ ",
       Shell.END,
       Shell.FONT1,
-      "SSD:    ",
+      "DISK:   ",
       Shell.END,
       Shell.FONT2,
-      "{:.2f} GiB".format(self.ssd.total / Floppy.GiB),
-      " / {:.2f} GiB".format(self.ssd.used / Floppy.GiB),
-      " ( {:.2f}% )".format(100 * self.ssd.used / max(1, self.ssd.total)),
+      "{:.2f} GiB".format(self.disk.total / Floppy.GiB),
+      " / {:.2f} GiB".format(self.disk.used / Floppy.GiB),
+      " ( {:.2f}% )".format(100 * self.disk.used / max(1, self.disk.total)),
       Shell.END]))
 
   def print_info(self):
@@ -142,7 +142,7 @@ class Machine:
     self.print_arch()
     self.print_cpu()
     self.print_ram()
-    self.print_ssd()
+    self.print_disk()
 
 # Functions
 
@@ -156,18 +156,39 @@ def print_version():
     "by Toni Helminen",
     Shell.END]))
 
+def print_logo():
+  print("".join([
+    Shell.LOGO,
+    "       .__                                   \n",
+    "  ____ |__| ____  ____   ____  __ _____  ___ \n",
+    " /    \|  |/ ___\/ __ \ /    \|  |  \  \/  / \n",
+    "|   |  \  \  \__\  ___/|   |  \  |  />    <  \n",
+    "|___|  /__|\___  >___  >___|  /____//__/\_ \ \n",
+    "     \/        \/    \/     \/            \/ ",
+    Shell.END]))
+
 def print_help():
   print("".join([
-    Shell.FONT3,
-    "> nicenux.py [opt]",
-    Shell.END,
     Shell.FONT2,
-    " Show Linux information",
+    "nicenux. Prints nice ASCII art Linux information. Written in Python3.\n",
+    Shell.END]))
+
+  print("".join([
+    Shell.FONT2,
+    "Just type: ",
+    Shell.END,
+    Shell.FONT3,
+    "> nicenux.py [opt]\n",
+    Shell.END]))
+
+  print("".join([
+    Shell.FONT2,
+    "Supported options:\n",
     Shell.END]))
 
   print("".join([
     Shell.FONT3,
-    "--help            ",
+    "--help    ",
     Shell.END,
     Shell.FONT2,
     " This help",
@@ -175,18 +196,36 @@ def print_help():
 
   print("".join([
     Shell.FONT3,
-    "--version         ",
+    "--logo    ",
+    Shell.END,
+    Shell.FONT2,
+    " Print nicenux ASCII art logo",
+    Shell.END]))
+
+  print("".join([
+    Shell.FONT3,
+    "--version ",
     Shell.FONT2,
     " Show version",
     Shell.END]))
 
 def print_error():
   print("".join([
-    Shell.FONT3,
-    "Bad options: '",
+    Shell.FONT1,
+    "Bad args: ",
+    Shell.END,
+    Shell.FONT2,
+    "'",
     " ".join(sys.argv[1:]),
     "'\n",
-    Shell.END,
+    Shell.END]))
+
+  print("".join([
+    Shell.FONT1,
+    "See:",
+    Shell.END]))
+
+  print("".join([
     Shell.FONT2,
     "> nicenux.py --help",
     Shell.END]))
@@ -200,6 +239,8 @@ def main():
     print_version()
   elif len(sys.argv) == 2 and sys.argv[1] == "--help":
     print_help()
+  elif len(sys.argv) == 2 and sys.argv[1] == "--logo":
+    print_logo()
   elif len(sys.argv) != 1:
     print_error()
   else:

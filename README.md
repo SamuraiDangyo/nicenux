@@ -1,12 +1,12 @@
 # nicenux
 
-This program shows nice ASCII art information of your Linux system.
-Super lightweight.
+Prints nice ASCII art Linux information.
 Written in Python3.
+Super lightweight.
 
 ## Usage
 
-- Install: `> sh install.sh`
-- Run:     `> nicenux.py`
+- Install: `sh install.sh`
+- Run:     `nicenux.py`
 
 Enjoy !
