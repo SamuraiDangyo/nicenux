@@ -32,8 +32,8 @@ echo ""
 pip install py-cpuinfo
 pip install psutil
 
-sudo cp nicenux.py $(BIN)
-sudo chmod 555 $(BIN)/nicenux.py
+sudo cp nicenux.py $BIN
+sudo chmod 555 $BIN/nicenux.py
 
 echo ""
 echo "${FONT2}... And done !${END}"
