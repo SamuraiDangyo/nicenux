@@ -27,7 +27,7 @@ import multiprocessing
 
 # Constants
 
-VERSION = "nicenux 1.2"
+VERSION = "nicenux 1.3"
 
 # Classes
 
@@ -39,6 +39,8 @@ class Shell:
   FONT1 = '\033[1;32;48m'
   FONT2 = '\033[1;39;48m'
   FONT3 = '\033[1;33;48m'
+  FONT4 = '\033[1;36;48m'
+  FONT5 = '\033[1;33;48m'
   BLINK = '\033[6;37;48m'
   END   = '\033[0m'
 
@@ -56,7 +58,10 @@ class Machine:
     os_name           = subprocess.check_output("lsb_release -a 2>/dev/null", shell = True).strip().decode()
     self.os_name      = re.findall("Description:\s*(.*)", os_name)[0]
     self.cpu_count    = multiprocessing.cpu_count()
-    self.cpu_freq     = psutil.cpu_freq()
+    self.cpu_freq     = psutil.cpu_freq().current
+    # Assumes no 1000GHz CPUs, might be wrong!
+    if self.cpu_freq > 1000:
+      self.cpu_freq /= 1000
 
   def print_kernel(self):
     print("".join([
@@ -104,7 +109,11 @@ class Machine:
       Shell.END,
       Shell.FONT2,
       self.cpu,
-      " {:.0f} x {:.2f}GHz".format(self.cpu_count, self.cpu_freq.current),
+      Shell.END,
+      Shell.FONT5,
+      " {:.0f}@{:.2f}GHz".format(self.cpu_count, self.cpu_freq),
+      Shell.END,
+      Shell.FONT4,
       " ( {:.2f}% )".format(self.cpu_usage),
       Shell.END]))
 
@@ -119,6 +128,8 @@ class Machine:
       Shell.FONT2,
       "{:.2f} GiB / ".format(self.memory.total / Floppy.GiB),
       "{:.2f} GiB".format(self.memory.used / Floppy.GiB),
+      Shell.END,
+      Shell.FONT4,
       " ( {:.2f}% )".format(self.memory.percent),
       Shell.END]))
 
@@ -133,6 +144,8 @@ class Machine:
       Shell.FONT2,
       "{:.2f} GiB".format(self.disk.total / Floppy.GiB),
       " / {:.2f} GiB".format(self.disk.used / Floppy.GiB),
+      Shell.END,
+      Shell.FONT4,
       " ( {:.2f}% )".format(100 * self.disk.used / max(1, self.disk.total)),
       Shell.END]))
 
