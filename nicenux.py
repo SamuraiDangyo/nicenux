@@ -27,7 +27,7 @@ import multiprocessing
 
 # Constants
 
-VERSION = "nicenux 1.3"
+VERSION = "nicenux 1.4"
 
 # Classes
 
@@ -59,7 +59,10 @@ class Machine:
     self.os_name      = re.findall("Description:\s*(.*)", os_name)[0]
     self.cpu_count    = multiprocessing.cpu_count()
     self.cpu_freq     = psutil.cpu_freq().current
-    # Assumes no 1000GHz CPUs, might be wrong!
+    self.fix_wrong_mhz()
+
+  # Assumes no 1000GHz CPUs, might be wrong!
+  def fix_wrong_mhz(self):
     if self.cpu_freq > 1000:
       self.cpu_freq /= 1000
 
