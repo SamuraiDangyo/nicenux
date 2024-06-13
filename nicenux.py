@@ -41,6 +41,7 @@ class Shell:
   FONT3 = '\033[1;33;48m'
   FONT4 = '\033[1;36;48m'
   FONT5 = '\033[1;33;48m'
+  FONT6 = '\033[1;37;48m'
   BLINK = '\033[6;37;48m'
   END   = '\033[0m'
 
@@ -48,7 +49,8 @@ class Floppy:
   GiB = 2 ** 30
 
 class Machine:
-  def __init__(self):
+  def __init__(self, verbose = False):
+    self.verbose      = verbose
     self.disk         = psutil.disk_usage('/')
     self.memory       = psutil.virtual_memory()
     self.cpu          = cpuinfo.get_cpu_info()['brand_raw']
@@ -76,7 +78,7 @@ class Machine:
       Shell.END,
       Shell.FONT2,
       self.kernel,
-      Shell.END]))
+      Shell.END][(0 if self.verbose else 3) : ]))
 
   def print_os(self):
     print("".join([
@@ -88,27 +90,27 @@ class Machine:
       Shell.END,
       Shell.FONT2,
       self.os_name,
-      Shell.END]))
+      Shell.END][(0 if self.verbose else 3) : ]))
 
   def print_arch(self):
     print("".join([
       Shell.LOGO,
-      " | |      | | |  \| | |  | |\ V / ",
+      " | |      | | |  \| | |  | |\ V /  ",
       Shell.END,
       Shell.FONT1,
-      " ARCH:   ",
+      "ARCH:   ",
       Shell.END,
       Shell.FONT2,
       self.architecture,
-      Shell.END]))
+      Shell.END][(0 if self.verbose else 3) : ]))
 
   def print_cpu(self):
     print("".join([
       Shell.LOGO,
-      " | |      | | | . ` | |  | | > < ",
+      " | |      | | | . ` | |  | | > <   ",
       Shell.END,
       Shell.FONT1,
-      "  CPU:    ",
+      "CPU:    ",
       Shell.END,
       Shell.FONT2,
       self.cpu,
@@ -118,15 +120,15 @@ class Machine:
       Shell.END,
       Shell.FONT4,
       " ( {:.2f}% )".format(self.cpu_usage),
-      Shell.END]))
+      Shell.END][(0 if self.verbose else 3) : ]))
 
   def print_ram(self):
     print("".join([
       Shell.LOGO,
-      " | |____ _| |_| |\  | |__| |/ . \ ",
+      " | |____ _| |_| |\  | |__| |/ . \  ",
       Shell.END,
       Shell.FONT1,
-      " RAM:    ",
+      "RAM:    ",
       Shell.END,
       Shell.FONT2,
       "{:.2f} GiB / ".format(self.memory.total / Floppy.GiB),
@@ -134,7 +136,7 @@ class Machine:
       Shell.END,
       Shell.FONT4,
       " ( {:.2f}% )".format(self.memory.percent),
-      Shell.END]))
+      Shell.END][(0 if self.verbose else 3) : ]))
 
   def print_disk(self):
     print("".join([
@@ -150,7 +152,7 @@ class Machine:
       Shell.END,
       Shell.FONT4,
       " ( {:.2f}% )".format(100 * self.disk.used / max(1, self.disk.total)),
-      Shell.END]))
+      Shell.END][(0 if self.verbose else 3) : ]))
 
   def print_info(self):
     self.print_kernel()
@@ -164,7 +166,7 @@ class Machine:
 
 def print_version():
   print("".join([
-    Shell.FONT2,
+    Shell.FONT6,
     VERSION,
     " ",
     Shell.END,
@@ -185,7 +187,7 @@ def print_logo():
 
 def print_help():
   print("".join([
-    Shell.FONT2,
+    Shell.FONT6,
     "nicenux. Prints nice ASCII art Linux information. Written in Python3.\n",
     Shell.END]))
 
@@ -198,36 +200,44 @@ def print_help():
     Shell.END]))
 
   print("".join([
-    Shell.FONT2,
+    Shell.FONT6,
     "Supported options:\n",
     Shell.END]))
 
   print("".join([
     Shell.FONT3,
-    "--help    ",
+    "--help / -h\n",
     Shell.END,
     Shell.FONT2,
-    " This help",
+    "  This help\n",
     Shell.END]))
 
   print("".join([
     Shell.FONT3,
-    "--logo    ",
+    "--verbose / -e\n",
     Shell.END,
     Shell.FONT2,
-    " Print nicenux ASCII art logo",
+    "  Print info w/ nice Linux logo\n",
     Shell.END]))
 
   print("".join([
     Shell.FONT3,
-    "--version ",
+    "--logo / -l\n",
+    Shell.END,
     Shell.FONT2,
-    " Show version",
+    "  Print nicenux ASCII art logo\n",
+    Shell.END]))
+
+  print("".join([
+    Shell.FONT3,
+    "--version / -v\n",
+    Shell.FONT2,
+    "  Show version",
     Shell.END]))
 
 def print_error():
   print("".join([
-    Shell.FONT1,
+    Shell.FONT6,
     "Bad args: ",
     Shell.END,
     Shell.FONT2,
@@ -237,26 +247,28 @@ def print_error():
     Shell.END]))
 
   print("".join([
-    Shell.FONT1,
+    Shell.FONT6,
     "See:",
     Shell.END]))
 
   print("".join([
     Shell.FONT2,
-    "> nicenux.py --help",
+    "  > nicenux.py --help",
     Shell.END]))
 
-def print_info():
-  machine = Machine()
+def print_info(verbose = False):
+  machine = Machine(verbose)
   machine.print_info()
 
 def main():
-  if len(sys.argv) == 2 and sys.argv[1] == "--version":
+  if len(sys.argv) == 2 and (sys.argv[1] == "--version" or sys.argv[1] == "-v"):
     print_version()
-  elif len(sys.argv) == 2 and sys.argv[1] == "--help":
+  elif len(sys.argv) == 2 and (sys.argv[1] == "--help" or sys.argv[1] == "-h"):
     print_help()
-  elif len(sys.argv) == 2 and sys.argv[1] == "--logo":
+  elif len(sys.argv) == 2 and (sys.argv[1] == "--logo" or sys.argv[1] == "-l"):
     print_logo()
+  elif len(sys.argv) == 2 and (sys.argv[1] == "--verbose" or sys.argv[1] == "-e"):
+    print_info(True)
   elif len(sys.argv) != 1:
     print_error()
   else:
