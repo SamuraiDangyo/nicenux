@@ -58,7 +58,7 @@ class Machine:
     self.architecture = subprocess.check_output("uname --processor", shell = True).strip().decode()
     self.kernel       = subprocess.check_output("uname --r", shell = True).strip().decode()
     os_name           = subprocess.check_output("lsb_release -a 2>/dev/null", shell = True).strip().decode()
-    self.os_name      = re.findall("Description:\s*(.*)", os_name)[0]
+    self.os_name      = re.findall("Description:\\s*(.*)", os_name)[0]
     self.cpu_count    = multiprocessing.cpu_count()
     self.cpu_freq     = psutil.cpu_freq().current
     self.fix_wrong_mhz()
@@ -83,7 +83,7 @@ class Machine:
   def print_os(self):
     print("".join([
       Shell.LOGO,
-      " | |    |_   _| \ | | |  | \ \ / / ",
+      " | |    |_   _| \\ | | |  | \\ \\ / / ",
       Shell.END,
       Shell.FONT1,
       "OS:     ",
@@ -95,7 +95,7 @@ class Machine:
   def print_arch(self):
     print("".join([
       Shell.LOGO,
-      " | |      | | |  \| | |  | |\ V /  ",
+      " | |      | | |  \\| | |  | |\\ V /  ",
       Shell.END,
       Shell.FONT1,
       "ARCH:   ",
@@ -116,7 +116,7 @@ class Machine:
       self.cpu,
       Shell.END,
       Shell.FONT5,
-      " {:.0f}@{:.2f}GHz".format(self.cpu_count, self.cpu_freq),
+      " {:.0f} @ {:.2f}GHz".format(self.cpu_count, self.cpu_freq),
       Shell.END,
       Shell.FONT4,
       " ( {:.2f}% )".format(self.cpu_usage),
@@ -125,7 +125,7 @@ class Machine:
   def print_ram(self):
     print("".join([
       Shell.LOGO,
-      " | |____ _| |_| |\  | |__| |/ . \  ",
+      " | |____ _| |_| |\\  | |__| |/ . \\  ",
       Shell.END,
       Shell.FONT1,
       "RAM:    ",
@@ -141,7 +141,7 @@ class Machine:
   def print_disk(self):
     print("".join([
       Shell.LOGO,
-      " |______|_____|_| \_|\____//_/ \_\ ",
+      " |______|_____|_| \\_|\\____//_/ \\_\\ ",
       Shell.END,
       Shell.FONT1,
       "DISK:   ",
@@ -179,10 +179,10 @@ def print_logo():
     Shell.LOGO,
     "       .__                                   \n",
     "  ____ |__| ____  ____   ____  __ _____  ___ \n",
-    " /    \|  |/ ___\/ __ \ /    \|  |  \  \/  / \n",
-    "|   |  \  \  \__\  ___/|   |  \  |  />    <  \n",
-    "|___|  /__|\___  >___  >___|  /____//__/\_ \ \n",
-    "     \/        \/    \/     \/            \/ ",
+    " /    \\|  |/ ___\\/ __ \\ /    \\|  |  \\  \\/  / \n",
+    "|   |  \\  \\  \\__\\  ___/|   |  \\  |  />    <  \n",
+    "|___|  /__|\\___  >___  >___|  /____//__/\\_ \\ \n",
+    "     \\/        \\/    \\/     \\/            \\/ ",
     Shell.END]))
 
 def print_help():

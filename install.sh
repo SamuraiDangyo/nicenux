@@ -29,8 +29,8 @@ BIN="/usr/bin"
 echo "${FONT1}Installing nicenux ...${END}"
 echo ""
 
-pip install py-cpuinfo
-pip install psutil
+sudo apt install python3-cpuinfo
+sudo apt install python3-psutil
 
 sudo cp nicenux.py $BIN
 sudo chmod 555 $BIN/nicenux.py
