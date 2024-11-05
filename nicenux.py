@@ -27,7 +27,7 @@ import multiprocessing
 
 # Constants
 
-VERSION = "nicenux 1.4"
+VERSION = "nicenux 1.5"
 
 # Classes
 
@@ -154,7 +154,7 @@ class Machine:
       " ( {:.2f}% )".format(100 * self.disk.used / max(1, self.disk.total)),
       Shell.END][(0 if self.verbose else 3) : ]))
 
-  def print_info(self):
+  def print_stats(self):
     self.print_kernel()
     self.print_os()
     self.print_arch()
@@ -164,117 +164,122 @@ class Machine:
 
 # Functions
 
-def print_version():
-  print("".join([
-    Shell.FONT6,
-    VERSION,
-    " ",
-    Shell.END,
-    Shell.BLINK,
-    "by Toni Helminen",
-    Shell.END]))
+class Cmd:
+  def exe(self):
+    if len(sys.argv) == 2   and (sys.argv[1] == "--version" or sys.argv[1] == "-v"):
+      self.print_version()
+    elif len(sys.argv) == 2 and (sys.argv[1] == "--help"    or sys.argv[1] == "-h"):
+      self.print_help()
+    elif len(sys.argv) == 2 and (sys.argv[1] == "--logo"    or sys.argv[1] == "-l"):
+      self.print_logo()
+    elif len(sys.argv) == 2 and (sys.argv[1] == "--verbose" or sys.argv[1] == "-e"):
+      self.print_stats(True)
+    elif len(sys.argv) != 1:
+      self.print_error()
+    else:
+      self.print_stats()
 
-def print_logo():
-  print("".join([
-    Shell.LOGO,
-    "       .__                                   \n",
-    "  ____ |__| ____  ____   ____  __ _____  ___ \n",
-    " /    \\|  |/ ___\\/ __ \\ /    \\|  |  \\  \\/  / \n",
-    "|   |  \\  \\  \\__\\  ___/|   |  \\  |  />    <  \n",
-    "|___|  /__|\\___  >___  >___|  /____//__/\\_ \\ \n",
-    "     \\/        \\/    \\/     \\/            \\/ ",
-    Shell.END]))
+  def print_version(self):
+    print("".join([
+      Shell.FONT6,
+      VERSION,
+      " ",
+      Shell.END,
+      Shell.BLINK,
+      "by Toni Helminen",
+      Shell.END]))
 
-def print_help():
-  print("".join([
-    Shell.FONT6,
-    "nicenux. Prints nice ASCII art Linux information. Written in Python3.\n",
-    Shell.END]))
+  def print_logo(self):
+    print("".join([
+      Shell.LOGO,
+      "       .__                                   \n",
+      "  ____ |__| ____  ____   ____  __ _____  ___ \n",
+      " /    \\|  |/ ___\\/ __ \\ /    \\|  |  \\  \\/  / \n",
+      "|   |  \\  \\  \\__\\  ___/|   |  \\  |  />    <  \n",
+      "|___|  /__|\\___  >___  >___|  /____//__/\\_ \\ \n",
+      "     \\/        \\/    \\/     \\/            \\/ ",
+      Shell.END]))
 
-  print("".join([
-    Shell.FONT2,
-    "Just type: ",
-    Shell.END,
-    Shell.FONT3,
-    "> nicenux.py [opt]\n",
-    Shell.END]))
+  def print_help(self):
+    print("".join([
+      Shell.FONT6,
+      "nicenux. Prints nice ASCII art Linux information. Written in Python3.\n",
+      Shell.END]))
 
-  print("".join([
-    Shell.FONT6,
-    "Supported options:\n",
-    Shell.END]))
+    print("".join([
+      Shell.FONT2,
+      "Just type: ",
+      Shell.END,
+      Shell.FONT3,
+      "> nicenux.py [opt]\n",
+      Shell.END]))
 
-  print("".join([
-    Shell.FONT3,
-    "--help / -h\n",
-    Shell.END,
-    Shell.FONT2,
-    "  This help\n",
-    Shell.END]))
+    print("".join([
+      Shell.FONT6,
+      "Supported options:\n",
+      Shell.END]))
 
-  print("".join([
-    Shell.FONT3,
-    "--verbose / -e\n",
-    Shell.END,
-    Shell.FONT2,
-    "  Print info w/ nice Linux logo\n",
-    Shell.END]))
+    print("".join([
+      Shell.FONT3,
+      "--help / -h\n",
+      Shell.END,
+      Shell.FONT2,
+      "  This help\n",
+      Shell.END]))
 
-  print("".join([
-    Shell.FONT3,
-    "--logo / -l\n",
-    Shell.END,
-    Shell.FONT2,
-    "  Print nicenux ASCII art logo\n",
-    Shell.END]))
+    print("".join([
+      Shell.FONT3,
+      "--verbose / -e\n",
+      Shell.END,
+      Shell.FONT2,
+      "  Print info w/ nice Linux logo\n",
+      Shell.END]))
 
-  print("".join([
-    Shell.FONT3,
-    "--version / -v\n",
-    Shell.FONT2,
-    "  Show version",
-    Shell.END]))
+    print("".join([
+      Shell.FONT3,
+      "--logo / -l\n",
+      Shell.END,
+      Shell.FONT2,
+      "  Print nicenux ASCII art logo\n",
+      Shell.END]))
 
-def print_error():
-  print("".join([
-    Shell.FONT6,
-    "Bad args: ",
-    Shell.END,
-    Shell.FONT2,
-    "'",
-    " ".join(sys.argv[1:]),
-    "'\n",
-    Shell.END]))
+    print("".join([
+      Shell.FONT3,
+      "--version / -v\n",
+      Shell.FONT2,
+      "  Show version",
+      Shell.END]))
 
-  print("".join([
-    Shell.FONT6,
-    "See:",
-    Shell.END]))
+  def print_error(self):
+    print("".join([
+      Shell.FONT6,
+      "Bad args: ",
+      Shell.END,
+      Shell.FONT2,
+      "'",
+      " ".join(sys.argv[1:]),
+      "'\n",
+      Shell.END]))
 
-  print("".join([
-    Shell.FONT2,
-    "  > nicenux.py --help",
-    Shell.END]))
+    print("".join([
+      Shell.FONT6,
+      "See:",
+      Shell.END]))
 
-def print_info(verbose = False):
-  machine = Machine(verbose)
-  machine.print_info()
+    print("".join([
+      Shell.FONT2,
+      "  > nicenux.py --help",
+      Shell.END]))
 
-def main():
-  if len(sys.argv) == 2 and (sys.argv[1] == "--version" or sys.argv[1] == "-v"):
-    print_version()
-  elif len(sys.argv) == 2 and (sys.argv[1] == "--help" or sys.argv[1] == "-h"):
-    print_help()
-  elif len(sys.argv) == 2 and (sys.argv[1] == "--logo" or sys.argv[1] == "-l"):
-    print_logo()
-  elif len(sys.argv) == 2 and (sys.argv[1] == "--verbose" or sys.argv[1] == "-e"):
-    print_info(True)
-  elif len(sys.argv) != 1:
-    print_error()
-  else:
-    print_info()
+  def print_stats(self, verbose = False):
+    machine = Machine(verbose)
+    machine.print_stats()
 
 # Init
+
+def main():
+  cmd = Cmd()
+  cmd.exe()
 
 if __name__ == "__main__":
   main()
