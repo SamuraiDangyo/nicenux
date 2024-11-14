@@ -31,6 +31,9 @@ echo ""
 
 sudo apt install python3-cpuinfo
 sudo apt install python3-psutil
+sudo apt update
+sudo apt upgrade
+sudo apt clean
 
 sudo cp nicenux.py $BIN
 sudo chmod 555 $BIN/nicenux.py
